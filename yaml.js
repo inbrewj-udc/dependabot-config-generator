@@ -58,7 +58,7 @@ module.exports.generate = async (
       'pull-request-branch-name': {
         separator: '-',
       },
-      labels: `dependabot:${packageManager}`,
+      labels: [`dependabot:${packageManager}`],
     };
   });
 
