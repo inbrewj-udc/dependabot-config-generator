@@ -46,7 +46,7 @@ module.exports.generate = async (
   //     time: '13:00'
   // To support v1 too (or indeed other package managers)
   // This is a great example of the very first example from Refactoring, _ooh_
-  const update = directory.map((d) => {
+  const updates = directory.map((d) => {
     return {
       'package-ecosystem': packageManager,
       directory: d,
@@ -62,7 +62,7 @@ module.exports.generate = async (
     };
   });
 
-  const configObj = { version, update };
+  const configObj = { version, updates };
 
   if (isTerminalOutput) {
     console.log(yaml.dump(configObj));

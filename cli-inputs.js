@@ -65,7 +65,10 @@ const findDependencyConfigWithGlobs = (filename = 'package.json') => {
   // ofc this will only work for node, for now
   // Would need maps of the various different types of config files to
   // be more fully fledged, ofc
-  const entries = fg.sync([`**/${filename}`], { dot: true });
+  const entries = fg.sync(
+    [`**/${filename}`, `!**/node_modules`, `!**/vendor`],
+    { dot: true }
+  );
   console.log(JSON.stringify(entries));
   const dependabotPaths = entries.map((location) => {
     const paths = location.split('/');
