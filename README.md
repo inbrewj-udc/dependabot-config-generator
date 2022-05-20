@@ -12,6 +12,14 @@ npm install -g dependabot-config-generator
 yarn global add dependabot-config-generator
 ```
 
+## Installing locally via Yarn
+
+NB: you'll need to reinstall after every change to pick up the new index.js in other directories!
+
+```bash
+yarn global add "file:$PWD"
+```
+
 ## Usage
 
 ```bash

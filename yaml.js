@@ -6,8 +6,8 @@ const generateConfigFile = async (configObj) => {
   const process = require('process');
   const path = require('path');
 
-  const dependabotDir = '.dependabot';
-  const configFile = 'config.yml';
+  const dependabotDir = '.github';
+  const configFile = 'dependabot.yml';
   const isExists = fs.existsSync(path.join(process.cwd(), dependabotDir));
 
   if (!isExists) {
@@ -22,13 +22,13 @@ const generateConfigFile = async (configObj) => {
 };
 
 module.exports.generate = async (
-  packageManeger,
+  packageManager,
   directory,
   updateSchedule,
   updateType,
   isTerminalOutput
 ) => {
-  const version = 1;
+  const version = 2;
 
   const automerged_updates = [
     {
@@ -39,16 +39,27 @@ module.exports.generate = async (
     },
   ];
 
-  const update_configs = [
-    {
-      package_manager: packageManeger,
-      directory,
-      update_schedule: updateSchedule,
-      automerged_updates,
-    },
-  ];
+  // update_schedule needs to be version 2 format
+  // Should look like:
+  // schedule:
+  //     interval: monthly
+  //     time: '13:00'
+  // To support v1 too (or indeed other package managers)
+  // This is a great example of the very first example from Refactoring, _ooh_
+  const update = directory.map((d) => {
+    return {
+      'package-ecosystem': packageManager,
+      directory: d,
+      'open-pull-requests-limit': 5,
+      schedule: {
+        interval: updateSchedule,
+        time: '08:00',
+      },
+      labels: `dependabot:${packageManager}`,
+    };
+  });
 
-  const configObj = { version, update_configs };
+  const configObj = { version, update };
 
   if (isTerminalOutput) {
     console.log(yaml.dump(configObj));

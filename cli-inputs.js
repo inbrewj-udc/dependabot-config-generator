@@ -1,9 +1,10 @@
 const cliSelect = require('cli-select');
 const chalk = require('chalk');
 const prompts = require('prompts');
+const fg = require('fast-glob');
 
 const packageManagerList = [
-  'javascript',
+  'npm',
   'ruby:bundler',
   'php:composer',
   'python',
@@ -23,7 +24,7 @@ const packageManagerList = [
 const updateScheduleList = ['daily', 'weekly', 'monthly'];
 
 const liveSupportingPackageManagerList = [
-  'javascript',
+  'npm',
   'ruby:bundler',
   'python',
   'php:composer',
@@ -69,6 +70,22 @@ const inputDirectory = async () => {
     validate: (value) => (!value ? 'This setting is required.' : true),
   });
 
+  if (directory.search(/\*/)) {
+    console.log('GLOB DETECTED');
+    // do this: https://github.com/dependabot/dependabot-core/issues/2178#issuecomment-861886046
+    // ofc this will only work for node, for now
+    const entries = fg.sync(['**/package.json'], { dot: true });
+    console.log(JSON.stringify(entries));
+    const dependabotPaths = entries.map((location) => {
+      const paths = location.split('/');
+      if (paths.length === 1) return '/';
+      paths.pop();
+      return paths.join('/');
+    });
+    console.log(JSON.stringify(dependabotPaths));
+    return dependabotPaths;
+  }
+
   return directory;
 };
 
@@ -91,7 +108,7 @@ const inputUpdateSchedule = async (packageManager) => {
   return updateSchedule;
 };
 
-const inputUpdateTyep = async () => {
+const inputUpdateType = async () => {
   const { value: updateType } = await cliSelect({
     values: updateTypeList,
     valueRenderer: (value, selected) => {
@@ -108,7 +125,7 @@ const inputUpdateTyep = async () => {
 
 const inputOutputType = async () => {
   const { value: outputType } = await cliSelect({
-    values: ['terminal', 'file(.dependabot/config.yml)'],
+    values: ['terminal', 'file(.github/dependabot.yml)'],
     valueRenderer: (value, selected) => {
       if (selected) {
         return displaySelectedText(value);
@@ -125,6 +142,6 @@ module.exports = {
   inputPackageManager,
   inputDirectory,
   inputUpdateSchedule,
-  inputUpdateTyep,
+  inputUpdateTyep: inputUpdateType,
   inputOutputType,
 };
