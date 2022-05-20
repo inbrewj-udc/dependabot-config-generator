@@ -89,12 +89,12 @@ const inputDirectory = async () => {
     validate: (value) => (!value ? 'This setting is required.' : true),
   });
 
-  if (directory.search(/\*/)) {
+  if (directory.search(/\*/) !== -1) {
     console.log('GLOB DETECTED');
     return findDependencyConfigWithGlobs();
   }
 
-  return directory;
+  return [directory];
 };
 
 const inputUpdateSchedule = async (packageManager) => {
