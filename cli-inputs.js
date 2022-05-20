@@ -60,6 +60,22 @@ const inputPackageManager = async () => {
   return packageManager;
 };
 
+const findDependencyConfigWithGlobs = (filename = 'package.json') => {
+  // do this: https://github.com/dependabot/dependabot-core/issues/2178#issuecomment-861886046
+  // ofc this will only work for node, for now
+  // Would need maps of the various different types of config files to
+  // be more fully fledged, ofc
+  const entries = fg.sync([`**/${filename}`], { dot: true });
+  console.log(JSON.stringify(entries));
+  const dependabotPaths = entries.map((location) => {
+    const paths = location.split('/');
+    paths.pop();
+    return `/${paths.join('/')}`;
+  });
+  console.log(JSON.stringify(dependabotPaths));
+  return dependabotPaths;
+};
+
 const inputDirectory = async () => {
   const { directory } = await prompts({
     type: 'text',
@@ -72,18 +88,7 @@ const inputDirectory = async () => {
 
   if (directory.search(/\*/)) {
     console.log('GLOB DETECTED');
-    // do this: https://github.com/dependabot/dependabot-core/issues/2178#issuecomment-861886046
-    // ofc this will only work for node, for now
-    const entries = fg.sync(['**/package.json'], { dot: true });
-    console.log(JSON.stringify(entries));
-    const dependabotPaths = entries.map((location) => {
-      const paths = location.split('/');
-      if (paths.length === 1) return '/';
-      paths.pop();
-      return paths.join('/');
-    });
-    console.log(JSON.stringify(dependabotPaths));
-    return dependabotPaths;
+    return findDependencyConfigWithGlobs();
   }
 
   return directory;

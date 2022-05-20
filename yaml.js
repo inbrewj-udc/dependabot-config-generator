@@ -50,10 +50,13 @@ module.exports.generate = async (
     return {
       'package-ecosystem': packageManager,
       directory: d,
-      'open-pull-requests-limit': 5,
       schedule: {
         interval: updateSchedule,
         time: '08:00',
+      },
+      'open-pull-requests-limit': 5,
+      'pull-request-branch-name': {
+        separator: '-',
       },
       labels: `dependabot:${packageManager}`,
     };
