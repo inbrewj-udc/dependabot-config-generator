@@ -5,41 +5,35 @@ const fg = require('fast-glob');
 
 const packageManagerList = [
   'npm',
-  'ruby:bundler',
-  'php:composer',
-  'python',
-  'go:modules',
-  'go:dep',
-  'java:maven',
-  'java:gradle',
-  'dotnet:nuget',
-  'rust:cargo',
-  'elixir:hex',
-  'docker',
-  'terraform',
-  'submodules',
-  'elm',
+  // 'ruby:bundler', // Not supported for now, maybe in the mists of spare time
+  // 'php:composer',
+  // 'python',
+  // 'go:modules',
+  // 'go:dep',
+  // 'java:maven',
+  // 'java:gradle',
+  // 'dotnet:nuget',
+  // 'rust:cargo',
+  // 'elixir:hex',
+  // 'docker',
+  // 'terraform',
+  // 'submodules',
+  // 'elm',
 ];
 
 const updateScheduleList = ['daily', 'weekly', 'monthly'];
 
 const liveSupportingPackageManagerList = [
   'npm',
-  'ruby:bundler',
-  'python',
-  'php:composer',
-  'dotnet:nuget',
-  'rust:cargo',
-  'elixir:hex',
+  // 'ruby:bundler', // also not supported
+  // 'python',
+  // 'php:composer',
+  // 'dotnet:nuget',
+  // 'rust:cargo',
+  // 'elixir:hex',
 ];
 
-const updateTypeList = [
-  'security:patch',
-  'semver:patch',
-  'semver:minor',
-  'in_range',
-  'all',
-];
+const updateTypeList = ['semver-major', 'semver-patch', 'semver-minor'];
 
 const displaySelectedText = (value) => {
   return chalk.blue(chalk.underline(value));
@@ -69,13 +63,13 @@ const findDependencyConfigWithGlobs = (filename = 'package.json') => {
     [`**/${filename}`, `!**/node_modules`, `!**/vendor`],
     { dot: true }
   );
-  console.log(JSON.stringify(entries));
   const dependabotPaths = entries.map((location) => {
     const paths = location.split('/');
     paths.pop();
     return `/${paths.join('/')}`;
   });
-  console.log(JSON.stringify(dependabotPaths));
+  console.log('Entries for these paths will be added to the config:');
+  console.log(JSON.stringify(dependabotPaths, null, 2));
   return dependabotPaths;
 };
 
@@ -84,7 +78,7 @@ const inputDirectory = async () => {
     type: 'text',
     name: 'directory',
     message:
-      "Where to look for package manifests (e.g. your package.json or Gemfile). The directory is relative to the repository's root.",
+      "Where to look for package manifests (e.g. your package.json or Gemfile). The directory is relative to the repository's root. Just type * to find all manifests",
     initial: '/',
     validate: (value) => (!value ? 'This setting is required.' : true),
   });
