@@ -73,10 +73,12 @@ module.exports.generate = async (
       'pull-request-branch-name': {
         separator: '-',
       },
-      ignore: {
-        'dependency-name': '*',
-        'update-types': [`version-update:${ignoreUpdatesOfType}`],
-      },
+      ignore: [
+        {
+          'dependency-name': '*',
+          'update-types': [`version-update:${ignoreUpdatesOfType}`],
+        },
+      ],
       labels: [`dependabot:${packageManager}`],
     };
   });
