@@ -35,15 +35,22 @@ Generate a configuration of "Dependabot".
 Example:
 
 ```yaml
-version: 1
-update_configs:
-  - package_manager: javascript
+version: 2
+updates:
+  - package-ecosystem: npm
     directory: /
-    update_schedule: daily
-    automerged_updates:
-      - match:
-          dependency_type: all
-          update_type: 'semver:minor'
+    schedule:
+      interval: monthly
+      time: '08:00'
+    open-pull-requests-limit: 6
+    pull-request-branch-name:
+      separator: '-'
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-major'
+    labels:
+      - 'dependabot:npm'
 ```
 
 ## Future Plans

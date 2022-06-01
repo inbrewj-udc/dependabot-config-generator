@@ -40,6 +40,7 @@ const displaySelectedText = (value) => {
 };
 
 const inputPackageManager = async () => {
+  console.log('Choose your package manager (npm option works for yarn, too!)');
   const { value: packageManager } = await cliSelect({
     values: packageManagerList,
     valueRenderer: (value, selected) => {
@@ -83,7 +84,9 @@ const inputDirectory = async () => {
     validate: (value) => (!value ? 'This setting is required.' : true),
   });
 
-  if (directory.search(/\*/) !== -1) {
+  const asteriskInPath = directory.search(/\*/) !== -1;
+
+  if (asteriskInPath) {
     console.log('GLOB DETECTED');
     return findDependencyConfigWithGlobs();
   }
@@ -92,6 +95,7 @@ const inputDirectory = async () => {
 };
 
 const inputUpdateSchedule = async (packageManager) => {
+  console.log('Choose your update schedule');
   if (liveSupportingPackageManagerList.includes(packageManager)) {
     updateScheduleList.push('live');
   }
@@ -110,7 +114,8 @@ const inputUpdateSchedule = async (packageManager) => {
   return updateSchedule;
 };
 
-const inputUpdateType = async () => {
+const ignoreSemverType = async () => {
+  console.log('IGNORE these updates in dependabot issued PRs');
   const { value: updateType } = await cliSelect({
     values: updateTypeList,
     valueRenderer: (value, selected) => {
@@ -126,6 +131,7 @@ const inputUpdateType = async () => {
 };
 
 const inputOutputType = async () => {
+  console.log('Print the config where?');
   const { value: outputType } = await cliSelect({
     values: ['terminal', 'file(.github/dependabot.yml)'],
     valueRenderer: (value, selected) => {
@@ -144,6 +150,6 @@ module.exports = {
   inputPackageManager,
   inputDirectory,
   inputUpdateSchedule,
-  inputUpdateTyep: inputUpdateType,
+  inputUpdateTyep: ignoreSemverType,
   inputOutputType,
 };
