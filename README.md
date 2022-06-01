@@ -20,6 +20,14 @@ NB: you'll need to reinstall after every change to pick up the new index.js in o
 yarn global add "file:$PWD"
 ```
 
+For reasons I don't understand, installing locally does not add the command `dependabot-config-generator` onto the zsh (and maybe bash) $PATH.
+
+To fix this, add an alias in your zshrc/bashrc/whatever shell run commands file:
+
+```
+alias dependabot-config-generator="dependabot-config-generator"
+```
+
 ## Usage
 
 ```bash
